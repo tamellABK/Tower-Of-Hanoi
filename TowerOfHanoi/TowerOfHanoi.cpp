@@ -3,11 +3,11 @@
 
 using namespace std;
 
-void Output(vector<int> st, vector<int> mid, vector<int> fin);
+void Output(vector<int>& st, vector<int>& mid, vector<int>& fin);
+void MoveRing(vector<int>& rung1, vector<int>& rung2);
 
 int main()
 {
-    vector<int> goal{10,9,8,7,6,5,4,3,2,1};
     vector<int> rungA{10,9,8,7,6,5,4,3,2,1};
     vector<int> rungB;
     vector<int> rungC;
@@ -15,57 +15,38 @@ int main()
     int moveCount = 0;
 
     // Thank you https://en.wikipedia.org/wiki/Tower_of_Hanoi#Iterative_solution
-    while (rungC != goal)
+    while (rungC != vector<int>{10,9,8,7,6,5,4,3,2,1})
     {
         // Legal A to B
-        if (!rungA.empty() && (rungB.size() == 0 || (rungA.back() < rungB.back())))
-        {
-            rungB.push_back(rungA.back());
-            rungA.pop_back();
-            moveCount++;
-        }
-        else
-        {
-            rungA.push_back(rungB.back());
-            rungB.pop_back();
-            moveCount++;
-        }
+        MoveRing(rungA, rungB);
 
         // Legal A to C
-        if (rungC.size() == 0 || (rungA.back() < rungC.back()))
-        {
-            rungC.push_back(rungA.back());
-            rungA.pop_back();
-            moveCount++;
-        }
-        else
-        {
-            rungA.push_back(rungC.back());
-            rungC.pop_back();
-            moveCount++;
-        }
+        MoveRing(rungA, rungC);
 
         // Legal B to C
-        if (rungC.size() == 0 || (rungB.back() < rungC.back()))
-        {
-            rungC.push_back(rungB.back());
-            rungB.pop_back();
-            moveCount++;
-        }
-        else
-        {
-            rungB.push_back(rungC.back());
-            rungC.pop_back();
-            moveCount++;
-        }
+        MoveRing(rungB, rungC);
+        moveCount += 3;
+ 
         Output(rungA, rungB, rungC);
         cout << endl << "Move Count: " << moveCount << endl;
     }
-    
-  
 }
 
-void Output(vector<int> st, vector<int> mid, vector<int> fin)
+void MoveRing(vector<int>& rung1, vector<int>& rung2)
+{
+    if (!rung1.empty() && (rung2.empty() || (rung1.back() < rung2.back())))
+    {
+        rung2.push_back(rung1.back());
+        rung1.pop_back();
+    }
+    else
+    {
+        rung1.push_back(rung2.back());
+        rung2.pop_back();
+    }
+}
+
+void Output(vector<int>& st, vector<int>& mid, vector<int>& fin)
 {
     system("cls");
     for (int i : st)
